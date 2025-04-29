@@ -49,9 +49,10 @@ def to_diagonally_dominant(matrix, vector):
         matrix, vector, success = make_diagonally_dominant(matrix, vector)
         if not success:
             print("The matrix is not diagonally dominant and cannot be rearranged. Proceeding anyway...")
-            matrix = [[float(val) for val in row] for row in matrix]
         else:
             print("The matrix was rearranged to be diagonally dominant.")
+    matrix = [[float(val) for val in row] for row in matrix]
+    vector = [[float(val[0])] for val in vector]
     return matrix, vector
 
 
