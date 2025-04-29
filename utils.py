@@ -10,7 +10,7 @@ def is_diagonally_dominant(matrix):
     for i in range(len(matrix)):
         diag = abs(matrix[i][i])
         row_sum = sum(abs(matrix[i][j]) for j in range(len(matrix)) if j != i)
-        if diag <= row_sum:
+        if diag < row_sum:
             return False
     return True
 
@@ -29,5 +29,15 @@ def make_diagonally_dominant(matrix, vector):
         new_matrix = [matrix[i] for i in perm]
         new_vector = [vector[i] for i in perm]
         if is_diagonally_dominant(new_matrix):
-            return new_matrix, new_vector
-    return None, None
+            return new_matrix, new_vector, True
+    return matrix, vector, False
+
+def to_diagonally_dominant(matrix, vector):
+    if not is_diagonally_dominant(matrix):
+        matrix, vector, success = make_diagonally_dominant(matrix, vector)
+        if not success:
+            print("⚠ The matrix is not diagonally dominant and cannot be rearranged. Proceeding anyway...")
+            matrix = [[float(val) for val in row] for row in matrix]
+        else:
+            print("✅ The matrix was rearranged to be diagonally dominant.")
+    return matrix, vector
