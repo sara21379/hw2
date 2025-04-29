@@ -5,27 +5,32 @@ def main():
     print(" Start! The code has started running")
 
     # הגדרת המטריצה והוקטור
-    matrixA = [[4, 2, 0], [2, 10, 4], [0, 4, 5]]
-    vectorB = [[2], [6], [5]]
+    matrix = [[4, 2, 0], [2, 10, 4], [0, 4, 5]]
+    vector = [[2], [6], [5]]
 
     # הדפסת מערכת המשוואות
     print("📘 The system of equations has been defined.")
-    for row in matrixA:
+    for row in matrix:
         print(row)
-    print("📘 vector B:", vectorB)
+    print("📘 vector B:", vector)
 
     # קלט מהמשתמש – איזו שיטה לבחור
-    print("🔢 Choose a method (jacobi / gauss):")
-    method = input(">> ").strip().lower()
+    method = input("🔢 Choose a method (jacobi / gauss):\n>> ").strip().lower()
 
     if method == "jacobi":
         print("\n Solution using the Jacobi method:")
-        jacobi_method(matrixA, vectorB)
+        solution = jacobi_method(matrix, vector)
     elif method == "gauss":
         print("\n Solution using the Gauss-Seidel method:")
-        gauss_seidel_method(matrixA, vectorB)
+        solution = gauss_seidel_method(matrix, vector)
     else:
+        solution = None
         print("Unrecognized method, try again.")
+
+    if solution:
+        print(f"\n✅ Final solution: {solution}")
+    else:
+        print("❌ The method did not converge.")
 
 if __name__== "__main__":
     main()
