@@ -1,5 +1,17 @@
 from itertools import permutations
 
+MAX_ITERATIONS = 1000
+TOLERANCE = 0.00001
+
+# Define the system of equations
+matrixA = [
+    [4, 2, 0],
+    [2, 10, 4],
+    [0, 4, 5]
+]
+
+vectorB = [[2], [6], [5]]
+
 def is_diagonally_dominant(matrix):
     """
     Checks if a matrix is diagonally dominant.
@@ -36,14 +48,14 @@ def to_diagonally_dominant(matrix, vector):
     if not is_diagonally_dominant(matrix):
         matrix, vector, success = make_diagonally_dominant(matrix, vector)
         if not success:
-            print("⚠ The matrix is not diagonally dominant and cannot be rearranged. Proceeding anyway...")
+            print("The matrix is not diagonally dominant and cannot be rearranged. Proceeding anyway...")
             matrix = [[float(val) for val in row] for row in matrix]
         else:
-            print("✅ The matrix was rearranged to be diagonally dominant.")
+            print("The matrix was rearranged to be diagonally dominant.")
     return matrix, vector
 
 
-def jacobi_method(matrix, vector, epsilon=0.00001, max_iterations=100):
+def jacobi_method(matrix, vector, TOLERANCE, MAX_ITERATIONS):
     """
     Solves a system of linear equations using the Jacobi iterative method.
     """
@@ -55,7 +67,7 @@ def jacobi_method(matrix, vector, epsilon=0.00001, max_iterations=100):
         # Make sure it is diagonal dominance
         matrix, vector = to_diagonally_dominant(matrix, vector)
 
-        for iteration in range(1, max_iterations + 1):
+        for iteration in range(1, MAX_ITERATIONS + 1):
             for i in range(n):
                 s = sum(matrix[i][j] * x[j] for j in range(n) if j != i)
                 x_new[i] = (vector[i][0] - s) / matrix[i][i]
@@ -64,8 +76,8 @@ def jacobi_method(matrix, vector, epsilon=0.00001, max_iterations=100):
 
             # Convergence check
             diff = [abs(x_new[i] - x[i]) for i in range(n)]
-            if max(diff) < epsilon:
-                print(f"\n✅ Solution converged after {iteration} iterations.")
+            if max(diff) < TOLERANCE:
+                print(f"\nSolution converged after {iteration} iterations.")
                 return x_new
 
             x = x_new[:]
@@ -84,7 +96,7 @@ def jacobi_method(matrix, vector, epsilon=0.00001, max_iterations=100):
         print(f"Error occurred!\n{e}")
         return  None
 
-def gauss_seidel_method(matrix, vector, epsilon=0.00001, max_iterations=100):
+def gauss_seidel_method(matrix, vector, TOLERANCE, MAX_ITERATIONS):
     """
     Solves a system of linear equations using the Gauss-Seidel iterative method.
     """
@@ -95,7 +107,7 @@ def gauss_seidel_method(matrix, vector, epsilon=0.00001, max_iterations=100):
         # Make sure it is diagonal dominance
         matrix, vector = to_diagonally_dominant(matrix, vector)
 
-        for iteration in range(1, max_iterations + 1):
+        for iteration in range(1, MAX_ITERATIONS + 1):
             x_old = x.copy()
             for i in range(n):
                 s = sum(matrix[i][j] * x[j] for j in range(n) if j != i)
@@ -105,8 +117,8 @@ def gauss_seidel_method(matrix, vector, epsilon=0.00001, max_iterations=100):
 
             # Convergence check
             diff = [abs(x[i] - x_old[i]) for i in range(n)]
-            if max(diff) < epsilon:
-                print(f"\n✅ Solution converged after {iteration} iterations.")
+            if max(diff) < TOLERANCE:
+                print(f"\nSolution converged after {iteration} iterations.")
                 return x
 
         return None
@@ -127,35 +139,38 @@ def gauss_seidel_method(matrix, vector, epsilon=0.00001, max_iterations=100):
 def main():
     print(" Start! The code has started running")
     try:
-        # הגדרת המטריצה והוקטור
-        matrix = [[4, 2, 0], [2, 10, 4], [0, 4, 5]]
-        vector = [[2], [6], [5]]
 
         # הדפסת מערכת המשוואות
-        print("📘 The system of equations has been defined.")
-        for row in matrix:
+        print("The system of equations has been defined.")
+        for row in matrixA:
             print(row)
-        print("📘 vector B:", vector)
+        print("vector B:", vectorB)
 
-        # קלט מהמשתמש – איזו שיטה לבחור
-        method = input("🔢 Choose a method (jacobi / gauss):\n>> ").strip().lower()
+        try:
+            method = int(input("Choose method:\n1 - Jacobi Method\n2 - Gauss-Seidel Method\nEnter your choice: "))
+        except ValueError:
+            print("Invalid input. Please enter 1 or 2.")
+            exit()
 
-        if method == "jacobi":
-            print("\n Solution using the Jacobi method:")
-            solution = jacobi_method(matrix, vector)
-        elif method == "gauss":
-            print("\n Solution using the Gauss-Seidel method:")
-            solution = gauss_seidel_method(matrix, vector)
+        if method == 1:
+            print("\nUsing Jacobi Method:\n")
+            solution = jacobi_method(matrixA, vectorB, TOLERANCE, MAX_ITERATIONS)
+        elif method == 2:
+            print("\nUsing Gauss-Seidel Method:\n")
+            solution = gauss_seidel_method(matrixA, vectorB, TOLERANCE, MAX_ITERATIONS)
         else:
-            solution = None
-            print("Unrecognized method, try again.")
+            raise ValueError()
 
         if solution:
-            print(f"\n✅ Final solution: {solution}")
+            print(f"\nFinal solution: {solution}")
         else:
-            print("❌ The method did not converge.")
+            print("The method did not converge.")
+
+    except ValueError:
+        print("Invalid input. Please enter 1 or 2.")
+
     except Exception as e:
-        print("\n<UNK> The method did not converge.")
+        print("\nAn unexpected error occurred.")
         print(e)
 
 if __name__== "__main__":
